@@ -5,10 +5,9 @@
   <version>1.0.0</version>
   <packaging>pom</packaging>
   <name>WeatherApiProject</name>
-  <description>Root project</description>
-  
+  <description>Root Project</description>
   <modules>
-  	<module>WeatherApiCommon</module>
-  	<module>WeatherApiService</module>
+    <module>WeatherApiCommon</module>
+    <module>WeatherApiService</module>
   </modules>
 </project>

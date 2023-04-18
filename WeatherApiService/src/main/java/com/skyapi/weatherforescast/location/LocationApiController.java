@@ -33,11 +33,11 @@ public class LocationApiController {
 //    }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody Location location) {
+    public ResponseEntity<?> add(@RequestBody @Valid Location location) {
         Location savedLocation = service.add(location);
         URI uri = URI.create("/v1/locations/" + location.getCode());
 
-        return ResponseEntity.created(uri).body(location);
+        return ResponseEntity.created(uri).body(savedLocation);
     }
 
     @GetMapping

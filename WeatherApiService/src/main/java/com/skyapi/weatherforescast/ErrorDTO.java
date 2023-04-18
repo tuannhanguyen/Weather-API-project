@@ -1,6 +1,8 @@
 package com.skyapi.weatherforescast;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,5 +15,9 @@ public class ErrorDTO {
     private Date timestamp;
     private int status;
     private String path;
-    private String error;
+    private List<String> error = new ArrayList<>();
+
+    public void addError(String message) {
+        this.error.add(message);
+    }
 }

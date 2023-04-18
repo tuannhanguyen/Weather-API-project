@@ -10,7 +10,7 @@ import com.skyapi.weatherforescast.common.Location;
 
 public interface LocationRepository extends CrudRepository<Location, String> {
 
-    @Query("SELECT l FROM Location l WHERE l.trashed = true")
+    @Query("SELECT l FROM Location l WHERE l.trashed = false")
     public List<Location> findUntrashed();
 
     @Query("SELECT l FROM Location l WHERE l.trashed = false AND l.code = ?1")

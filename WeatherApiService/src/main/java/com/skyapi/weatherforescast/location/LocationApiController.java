@@ -1,5 +1,6 @@
 package com.skyapi.weatherforescast.location;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -34,8 +35,9 @@ public class LocationApiController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody Location location) {
         Location savedLocation = service.add(location);
+        URI uri = URI.create("/v1/locations/" + location.getCode());
 
-        return ResponseEntity.ok().body(savedLocation);
+        return ResponseEntity.created(uri).body(location);
     }
 
     @GetMapping

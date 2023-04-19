@@ -2,6 +2,8 @@ package com.skyapi.weatherforescast.common;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -25,11 +27,14 @@ public class RealtimeWeather {
     private int temperature;
     private int humidity;
     private int precipation;
+
+    @JsonProperty("wind_speed")
     private int windSpeed;
 
     @Column(length = 50)
     private String status;
 
+    @JsonProperty("last_updated")
     private Date lastUpdated;
 
     @OneToOne

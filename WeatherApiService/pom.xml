@@ -56,6 +56,11 @@
             <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+		    <groupId>com.ip2location</groupId>
+		    <artifactId>ip2location-java</artifactId>
+		    <version>8.10.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

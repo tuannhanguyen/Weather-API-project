@@ -1,5 +1,6 @@
 package com.skyapi.weatherforescast.realtime;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class RealtimeWeatherApiController {
     GeolocationService locationService;
     @Autowired
     RealtimeWeatherService realtimeWeatherService;
+    @Autowired
+    ModelMapper modelMapper;
 
     @GetMapping
     public ResponseEntity<?> getRealtimeWeatherByIPAddress(HttpServletRequest request) {
@@ -34,7 +37,9 @@ public class RealtimeWeatherApiController {
             Location location = locationService.getLocation(ipAddress);
             RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocation(location);
 
-            return ResponseEntity.ok(realtimeWeather);
+            RealtimeWeatherDTO dto = modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
+
+            return ResponseEntity.ok(dto);
         } catch (GeolocationException e) {
             LOGGER.error(e.getMessage(), e);
 

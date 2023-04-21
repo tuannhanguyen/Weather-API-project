@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +24,7 @@ import com.skyapi.weatherforescast.common.RealtimeWeather;
 import com.skyapi.weatherforescast.location.LocationNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/realtime")
@@ -61,20 +64,33 @@ public class RealtimeWeatherApiController {
     public ResponseEntity<?> getRealtimeWeatherByLocationCode(@PathVariable("locationCode") String code, HttpServletRequest request) {
         try {
             RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocationCode(code);
-
-            RealtimeWeatherDTO dto = modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
+            RealtimeWeatherDTO dto = entity2DTO(realtimeWeather);
 
             return ResponseEntity.ok(dto);
         } catch (LocationNotFoundException e) {
-//            ErrorDTO error = new ErrorDTO();
-//            error.setError(List.of("Location not found"));
-//            error.setStatus(404);
-//            error.setTimestamp(new Date());
-//            error.setPath(request.getServletPath());
-//
-//            return ResponseEntity.ok(error);
+            LOGGER.error(e.getMessage(), e);
+
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/{locationCode}")
+    public ResponseEntity<?> updateRealtimeWeather(@PathVariable("locationCode") String locationCode,
+            @RequestBody @Valid RealtimeWeather realtimeWeatherInRequest) {
+
+        try {
+            RealtimeWeather updatedRealtimeWeather = realtimeWeatherService.update(locationCode, realtimeWeatherInRequest);
+            RealtimeWeatherDTO dto = entity2DTO(updatedRealtimeWeather);
+
+            return ResponseEntity.ok(dto);
+        } catch (LocationNotFoundException e) {
+            LOGGER.error(e.getMessage(), e);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private RealtimeWeatherDTO entity2DTO(RealtimeWeather realtimeWeather) {
+        return modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
     }
 
 }

@@ -20,4 +20,7 @@ public interface LocationRepository extends CrudRepository<Location, String> {
     @Modifying
     public void trashByCode(String code);
 
+    @Query("SELECT l FROM Location l WHERE l.countryCode = ?1 AND l.cityName = ?2 AND l.trashed = false")
+    public Location findByCountryCodeAndCityname(String countryCode, String cityName);
+
 }

@@ -2,6 +2,8 @@ package com.skyapi.weatherforescast.hourly;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,7 +14,6 @@ import org.springframework.test.annotation.Rollback;
 import com.skyapi.weatherforescast.common.HourlyWeather;
 import com.skyapi.weatherforescast.common.HourlyWeatherId;
 import com.skyapi.weatherforescast.common.Location;
-import com.skyapi.weatherforescast.location.HourlyWeatherRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -44,5 +45,18 @@ public class HourlyWeatherRepositoryTests {
 
         assertThat(updatedHourlyWeather.getId().getLocation().getCode()).isEqualTo(locationCode);
         assertThat(updatedHourlyWeather.getId().getHourOfDay()).isEqualTo(hourOfDay);
+    }
+
+    @Test
+    public void testFindByLocatinCode() {
+        String locationCode = "HCM_VN";
+        int currentHour = 11;
+        List<HourlyWeather> forecast = repo.findByLocationCode(locationCode, currentHour);
+
+        for (HourlyWeather hourlyWeather : forecast) {
+            System.out.println(hourlyWeather);
+        }
+
+        assertThat(forecast).isNotEmpty();
     }
 }

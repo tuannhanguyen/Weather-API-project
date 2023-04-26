@@ -1,6 +1,9 @@
 package com.skyapi.weatherforescast.hourly;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,13 +82,30 @@ public class HourlyWeatherApiController {
 
     @PutMapping("/{locationCode}")
     public ResponseEntity<?> updateHourlyForecast(@PathVariable("locationCode") String locationCode,
-            @RequestBody List<HourlyWeatherDTO> listDTO) throws BadRequestException {
+            @RequestBody @jakarta.validation.Valid List<HourlyWeatherDTO> listDTO) throws BadRequestException {
 
         if (listDTO.isEmpty()) {
             throw new BadRequestException("Hourly forecast data cannot be empty");
         }
 
+        listDTO.forEach(System.out::println);
+
+        List<HourlyWeather> listHourlyWeather = listDTO2ListEntity(listDTO);
+
+        listHourlyWeather.forEach(System.out::println);
+
         return ResponseEntity.accepted().build();
+    }
+
+    private List<HourlyWeather> listDTO2ListEntity(List<HourlyWeatherDTO> listDTO) {
+        List<HourlyWeather> listEntity = new ArrayList<>();
+
+        listDTO.forEach(dto -> {
+            HourlyWeather entity = modelMapper.map(dto, HourlyWeather.class);
+            listEntity.add(entity);
+        });
+
+        return listEntity;
     }
 
     private HourlyWeatherListDTO listEntity2DTO(List<HourlyWeather> hourlyForecast) {

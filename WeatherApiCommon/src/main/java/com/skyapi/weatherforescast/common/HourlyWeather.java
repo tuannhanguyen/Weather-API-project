@@ -20,4 +20,10 @@ public class HourlyWeather {
     @Column(length = 50)
     private String status;
 
+    @Override
+    public String toString() {
+        return "HourlyWeather [hourOfDay=" + id.getHourOfDay() + ", temperature=" + temperature + ", precipitation=" + precipitation
+                + ", status=" + status + "]";
+    }
+
 }

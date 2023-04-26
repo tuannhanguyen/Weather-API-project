@@ -1,5 +1,7 @@
 package com.skyapi.weatherforescast.hourly;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,10 @@ public class HourlyWeatherService {
         }
 
         return hourlyWeatherRepo.findByLocationCode(locationCode, currentHour);
+    }
+
+    public List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyForecastInRequest) {
+        return Collections.emptyList();
     }
 
 }

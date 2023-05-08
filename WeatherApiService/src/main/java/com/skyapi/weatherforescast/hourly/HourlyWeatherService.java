@@ -1,5 +1,6 @@
 package com.skyapi.weatherforescast.hourly;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -35,14 +36,37 @@ public class HourlyWeatherService {
         Location locationInDb = locationRepo.findByCode(locationCode);
 
         if (locationInDb == null) {
-            throw new LocationNotFoundException("No location found with the given code");
+            throw new LocationNotFoundException("No location found with the given code" + locationCode);
         }
 
         return hourlyWeatherRepo.findByLocationCode(locationCode, currentHour);
     }
 
-    public List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyForecastInRequest) {
-        return Collections.emptyList();
+    public List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyWeatherInRequest) throws LocationNotFoundException {
+    	Location location = locationRepo.findByCode(locationCode);
+    	
+    	if (location == null) {
+    		throw new LocationNotFoundException("No location found with the given code" + locationCode);
+    	}
+    	
+    	hourlyWeatherInRequest.forEach(item -> {
+    		item.getId().setLocation(location);
+    	});
+    	
+    	List<HourlyWeather> hourlyWeatherInDb = location.getListHourlyWeather();
+    	List<HourlyWeather> hourlyWeatherToBeRemoved = new ArrayList<>();
+    	
+    	for (HourlyWeather item : hourlyWeatherInDb) {
+			if (!hourlyWeatherInRequest.contains(item)) {
+				hourlyWeatherToBeRemoved.add(item.getShallowCopy());
+			}
+		}
+    	
+    	for (HourlyWeather item : hourlyWeatherToBeRemoved) {
+    		hourlyWeatherInDb.remove(item);
+		}
+    	
+        return (List<HourlyWeather>) hourlyWeatherRepo.saveAll(hourlyWeatherInRequest);
     }
 
 }

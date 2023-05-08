@@ -19,63 +19,86 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ErrorDTO handleGenericException(HttpServletRequest request, Exception ex) {
-        ErrorDTO error = new ErrorDTO();
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorDTO handleGenericException(HttpServletRequest request, Exception ex) {
+		ErrorDTO error = new ErrorDTO();
 
-        error.setTimestamp(new Date());
-        error.addError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        error.setPath(request.getServletPath());
+		error.setTimestamp(new Date());
+		error.addError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+		error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		error.setPath(request.getServletPath());
 
-        LOGGER.error(ex.getMessage(), ex);
+		LOGGER.error(ex.getMessage(), ex);
 
-        return error;
-    }
+		return error;
+	}
 
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ErrorDTO handleBadRequestException(HttpServletRequest request, Exception ex) {
-        ErrorDTO error = new ErrorDTO();
+	@ExceptionHandler(BadRequestException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO handleBadRequestException(HttpServletRequest request, Exception ex) {
+		ErrorDTO error = new ErrorDTO();
 
-        error.setTimestamp(new Date());
-        error.addError(ex.getMessage());
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setPath(request.getServletPath());
+		error.setTimestamp(new Date());
+		error.addError(ex.getMessage());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.setPath(request.getServletPath());
 
-        LOGGER.error(ex.getMessage(), ex);
+		LOGGER.error(ex.getMessage(), ex);
 
-        return error;
-    }
+		return error;
+	}
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO handleConstraintValidatinException(HttpServletRequest request, Exception ex) {
+		ErrorDTO error = new ErrorDTO();
 
-        LOGGER.error(ex.getMessage(), ex);
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.setPath(request.getServletPath());
 
-        ErrorDTO error = new ErrorDTO();
+		ConstraintViolationException violationException = (ConstraintViolationException) ex;
 
-        error.setTimestamp(new Date());
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setPath(((ServletWebRequest) request).getRequest().getServletPath());
-        List<ObjectError> fieldErrors = ex.getAllErrors();
+		var constraintViolations = violationException.getConstraintViolations();
 
-        fieldErrors.forEach(fieldError -> {
-            error.addError(fieldError.getDefaultMessage());
-        });
+		constraintViolations.forEach(constraint -> {
+			error.addError(constraint.getPropertyPath() + ": " + constraint.getMessage());
+		});
 
-        return new ResponseEntity<>(error, headers, status);
-    }
+		LOGGER.error(ex.getMessage(), ex);
 
+		return error;
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+		LOGGER.error(ex.getMessage(), ex);
+
+		ErrorDTO error = new ErrorDTO();
+
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.setPath(((ServletWebRequest) request).getRequest().getServletPath());
+		List<ObjectError> fieldErrors = ex.getAllErrors();
+
+		fieldErrors.forEach(fieldError -> {
+			error.addError(fieldError.getDefaultMessage());
+		});
+
+		return new ResponseEntity<>(error, headers, status);
+	}
 
 }

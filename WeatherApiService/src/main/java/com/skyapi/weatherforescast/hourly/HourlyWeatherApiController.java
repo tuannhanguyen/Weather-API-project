@@ -53,7 +53,7 @@ public class HourlyWeatherApiController {
                 return ResponseEntity.noContent().build();
             }
 
-            return ResponseEntity.ok(listEntity2DTO(listHourlyWeather));
+            return ResponseEntity.ok(listEntity2ListDTO(listHourlyWeather));
         } catch (NumberFormatException | GeolocationException e) {
 
             return ResponseEntity.badRequest().build();
@@ -75,7 +75,7 @@ public class HourlyWeatherApiController {
                 return ResponseEntity.noContent().build();
             }
 
-            return ResponseEntity.ok(listEntity2DTO(listHourlyWeather));
+            return ResponseEntity.ok(listEntity2ListDTO(listHourlyWeather));
         } catch (NumberFormatException e) {
 
             return ResponseEntity.badRequest().build();
@@ -98,7 +98,7 @@ public class HourlyWeatherApiController {
         try {
 			List<HourlyWeather> updatedHourlyWeather = hourlyWeatherService.updateByLocationCode(locationCode, listHourlyWeather);
 			
-			HourlyWeatherListDTO dto = listEntity2DTO(updatedHourlyWeather);
+			HourlyWeatherListDTO dto = listEntity2ListDTO(updatedHourlyWeather);
 			
 			return ResponseEntity.ok(dto);
 		} catch (LocationNotFoundException e) {
@@ -118,7 +118,7 @@ public class HourlyWeatherApiController {
         return listEntity;
     }
 
-    private HourlyWeatherListDTO listEntity2DTO(List<HourlyWeather> hourlyForecast) {
+    private HourlyWeatherListDTO listEntity2ListDTO(List<HourlyWeather> hourlyForecast) {
         Location location = hourlyForecast.get(0).getId().getLocation();
 
         HourlyWeatherListDTO listDTO = new HourlyWeatherListDTO();

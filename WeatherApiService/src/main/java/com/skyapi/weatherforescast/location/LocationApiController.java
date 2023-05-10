@@ -26,7 +26,8 @@ public class LocationApiController {
 
     @Autowired
     private LocationService service;
-    @Autowired ModelMapper mapper;
+    @Autowired
+    ModelMapper mapper;
 
 //    public LocationApiController(LocationService service) {
 //        super();
@@ -53,36 +54,24 @@ public class LocationApiController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<?> getLocation(@PathVariable("code") String code) {
+    public ResponseEntity<?> getLocation(@PathVariable("code") String code) throws LocationNotFoundException {
         Location location = service.get(code);
-
-        if (location == null) {
-            return ResponseEntity.notFound().build();
-        }
 
         return ResponseEntity.ok(entity2DTO(location));
     }
 
     @PutMapping
     public ResponseEntity<?> updateLocation(@RequestBody @Valid LocationDTO dto) {
-        try {
-            Location locationUpdated = service.update(dto2Entity(dto));
+        Location locationUpdated = service.update(dto2Entity(dto));
 
-            return ResponseEntity.ok(entity2DTO(locationUpdated));
-        } catch (LocationNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(entity2DTO(locationUpdated));
     }
 
     @DeleteMapping("/{code}")
     public ResponseEntity<?> deleteLocation(@PathVariable("code") String code) {
-        try {
-            service.delete(code);
+        service.delete(code);
 
-            return ResponseEntity.noContent().build();
-        } catch (LocationNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.noContent().build();
     }
 
     private LocationDTO entity2DTO(Location location) {

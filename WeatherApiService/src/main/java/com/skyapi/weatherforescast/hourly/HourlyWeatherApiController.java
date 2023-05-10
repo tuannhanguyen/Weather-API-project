@@ -3,8 +3,6 @@ package com.skyapi.weatherforescast.hourly;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import com.skyapi.weatherforescast.GeolocationException;
 import com.skyapi.weatherforescast.GeolocationService;
 import com.skyapi.weatherforescast.common.HourlyWeather;
 import com.skyapi.weatherforescast.common.Location;
-import com.skyapi.weatherforescast.location.LocationNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,12 +28,15 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/v1/hourly")
 @Validated
 public class HourlyWeatherApiController {
-	
-	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(HourlyWeatherApiController.class);
 
-    @Autowired GeolocationService geoLocationService;
-    @Autowired HourlyWeatherService hourlyWeatherService;
-    @Autowired ModelMapper modelMapper;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(HourlyWeatherApiController.class);
+
+    @Autowired
+    GeolocationService geoLocationService;
+    @Autowired
+    HourlyWeatherService hourlyWeatherService;
+    @Autowired
+    ModelMapper modelMapper;
 
     @GetMapping
     public ResponseEntity<?> listHourlyForecastByIpAddress(HttpServletRequest request) {
@@ -57,14 +57,12 @@ public class HourlyWeatherApiController {
         } catch (NumberFormatException | GeolocationException e) {
 
             return ResponseEntity.badRequest().build();
-        } catch (LocationNotFoundException e) {
-
-            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/{locationCode}")
-    public ResponseEntity<?> getHourlyWeatherByLocatinCode(@PathVariable("locationCode") String locationCode,HttpServletRequest request) {
+    public ResponseEntity<?> getHourlyWeatherByLocatinCode(@PathVariable("locationCode") String locationCode,
+            HttpServletRequest request) {
 
         try {
             int currentHour = Integer.parseInt(request.getHeader("X-Current-Hour"));
@@ -79,9 +77,6 @@ public class HourlyWeatherApiController {
         } catch (NumberFormatException e) {
 
             return ResponseEntity.badRequest().build();
-        } catch (LocationNotFoundException e) {
-
-            return ResponseEntity.notFound().build();
         }
     }
 
@@ -94,17 +89,13 @@ public class HourlyWeatherApiController {
         }
 
         List<HourlyWeather> listHourlyWeather = listDTO2ListEntity(listDTO);
-        
-        try {
-			List<HourlyWeather> updatedHourlyWeather = hourlyWeatherService.updateByLocationCode(locationCode, listHourlyWeather);
-			
-			HourlyWeatherListDTO dto = listEntity2ListDTO(updatedHourlyWeather);
-			
-			return ResponseEntity.ok(dto);
-		} catch (LocationNotFoundException e) {
-			LOGGER.error(e.getMessage());
-			return ResponseEntity.notFound().build();
-		}
+
+        List<HourlyWeather> updatedHourlyWeather = hourlyWeatherService.updateByLocationCode(locationCode,
+                listHourlyWeather);
+
+        HourlyWeatherListDTO dto = listEntity2ListDTO(updatedHourlyWeather);
+
+        return ResponseEntity.ok(dto);
     }
 
     private List<HourlyWeather> listDTO2ListEntity(List<HourlyWeatherDTO> listDTO) {

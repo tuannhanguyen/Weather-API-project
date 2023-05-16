@@ -75,6 +75,16 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+			     <groupId>org.maven.apache.plugins</groupId>
+			     <artifactId>maven-surefire-plugin</artifactId>
+			     <version>3.0.0</version>
+			     <configuration>
+			         <excludes>
+			             <exclude>**/*.java</exclude>
+			         </excludes>
+			     </configuration>
+			</plugin>
 		</plugins>
 	</build>
 

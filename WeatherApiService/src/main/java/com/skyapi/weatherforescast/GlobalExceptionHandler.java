@@ -44,7 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return error;
 	}
 
-	@ExceptionHandler(BadRequestException.class)
+	@ExceptionHandler({BadRequestException.class, GeolocationException.class})
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorDTO handleBadRequestException(HttpServletRequest request, Exception ex) {

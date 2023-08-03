@@ -1,6 +1,6 @@
 package com.skyapi.weatherforescast;
 
-public class GeolocationException extends Exception {
+public class GeolocationException extends RuntimeException {
 
     public GeolocationException(String message) {
         super(message);

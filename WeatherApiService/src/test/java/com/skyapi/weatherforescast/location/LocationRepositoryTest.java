@@ -12,10 +12,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
+import com.skyapi.weatherforescast.common.DailyWeather;
 import com.skyapi.weatherforescast.common.HourlyWeather;
 import com.skyapi.weatherforescast.common.HourlyWeatherId;
 import com.skyapi.weatherforescast.common.Location;
-import com.skyapi.weatherforescast.location.LocationRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -54,6 +54,39 @@ public class LocationRepositoryTest {
         Location updatedLocation = repo.save(location);
 
         assertThat(updatedLocation.getListHourlyWeather()).isNotEmpty();
+    }
+
+    @Test
+    public void testAddDailyWeatherData() {
+        Location location = repo.findById("HCM_VN").get();
+
+        List<DailyWeather> listDailyWeather = location.getListDailyWeather();
+
+        DailyWeather dailyWeather1 = new DailyWeather();
+        dailyWeather1.getId().setLocation(location);
+        dailyWeather1.getId().setDayOfMonth(17);
+        dailyWeather1.getId().setMonth(7);
+        dailyWeather1.setMinTemp(26);
+        dailyWeather1.setMaxTemp(34);
+        dailyWeather1.setPrecipitation(10);
+        dailyWeather1.setStatus("Clear");
+
+        DailyWeather dailyWeather2 = new DailyWeather();
+        dailyWeather2.getId().setLocation(location);
+        dailyWeather2.getId().setDayOfMonth(18);
+        dailyWeather2.getId().setMonth(7);
+        dailyWeather2.setMinTemp(28);
+        dailyWeather2.setMaxTemp(32);
+        dailyWeather2.setPrecipitation(11);
+        dailyWeather2.setStatus("Sunny");
+
+        listDailyWeather.add(dailyWeather1);
+        listDailyWeather.add(dailyWeather2);
+
+        Location updatedLocation = repo.save(location);
+
+        assertThat(!updatedLocation.getListDailyWeather().isEmpty());
+
     }
 
 }

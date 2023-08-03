@@ -31,4 +31,14 @@ public class DailyWeatherService {
 
         return dailyWeatherRepo.findByLocationCode(locationInDb.getCode());
     }
+
+    public List<DailyWeather> getByLocationCode(String locationCode) {
+        Location locationInDb = locationRepo.findByCode(locationCode);
+
+        if (locationInDb == null) {
+            throw new LocationNotFoundException(locationCode);
+        }
+
+        return dailyWeatherRepo.findByLocationCode(locationCode);
+    }
 }

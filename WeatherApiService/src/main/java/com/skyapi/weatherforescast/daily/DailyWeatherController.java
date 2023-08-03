@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,6 +44,17 @@ public class DailyWeatherController {
         return ResponseEntity.ok(listEntity2DTOList(dailyForecast));
     }
 
+    @GetMapping("/{locationCode}")
+    public ResponseEntity<?> getDailyForecastByLocationCode(@PathVariable("locationCode") String locationCode) {
+        List<DailyWeather> dailyForecast = dailyWeatherService.getByLocationCode(locationCode);
+
+        if (dailyForecast.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(listEntity2DTOList(dailyForecast));
+    }
+
     private DailyWeatherListDTO listEntity2DTOList(List<DailyWeather> listDailyWeather) {
         Location location = listDailyWeather.get(0).getId().getLocation();
 
@@ -56,5 +68,4 @@ public class DailyWeatherController {
 
         return listDTO;
     }
-
 }

@@ -53,6 +53,9 @@ public class Location {
     @OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HourlyWeather> listHourlyWeather = new ArrayList<>();
 
+    @OneToMany(mappedBy = "id.location")
+    private List<DailyWeather> listDailyWeather = new ArrayList<>();
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

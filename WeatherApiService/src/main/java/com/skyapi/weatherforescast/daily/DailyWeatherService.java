@@ -1,5 +1,6 @@
 package com.skyapi.weatherforescast.daily;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,32 @@ public class DailyWeatherService {
         }
 
         return dailyWeatherRepo.findByLocationCode(locationCode);
+    }
+
+    public List<DailyWeather> updateByLocationCode(String locationCode, List<DailyWeather> dailyWeatherInRequest ) {
+        Location location = locationRepo.findByCode(locationCode);
+
+        if (location == null) {
+            throw new LocationNotFoundException(locationCode);
+        }
+
+        dailyWeatherInRequest.forEach(dailyWeather -> {
+            dailyWeather.getId().setLocation(location);
+        });
+
+        List<DailyWeather> dailyWeatherInDb = location.getListDailyWeather();
+        List<DailyWeather> dailyWeatherTobeRemoved = new ArrayList<>();
+
+        for (DailyWeather item : dailyWeatherInDb) {
+            if (!dailyWeatherInRequest.contains(item)) {
+                dailyWeatherTobeRemoved.add(item.getShallowCopy());
+            }
+        }
+
+        for (DailyWeather item : dailyWeatherTobeRemoved) {
+            dailyWeatherInDb.remove(item);
+        }
+
+        return (List<DailyWeather>) dailyWeatherRepo.saveAll(dailyWeatherInRequest);
     }
 }

@@ -2,10 +2,6 @@ package com.skyapi.weatherforescast.common;
 
 import java.util.Date;
 
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;

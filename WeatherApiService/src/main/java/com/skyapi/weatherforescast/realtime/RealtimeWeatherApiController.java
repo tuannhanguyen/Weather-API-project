@@ -54,25 +54,30 @@ public class RealtimeWeatherApiController {
     }
 
     @GetMapping("/{locationCode}")
-    public ResponseEntity<?> getRealtimeWeatherByLocationCode(@PathVariable("locationCode") String code, HttpServletRequest request) {
-            RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocationCode(code);
-            RealtimeWeatherDTO dto = entity2DTO(realtimeWeather);
+    public ResponseEntity<?> getRealtimeWeatherByLocationCode(@PathVariable("locationCode") String code,
+            HttpServletRequest request) {
+        RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocationCode(code);
+        RealtimeWeatherDTO dto = entity2DTO(realtimeWeather);
 
-            return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/{locationCode}")
     public ResponseEntity<?> updateRealtimeWeather(@PathVariable("locationCode") String locationCode,
-            @RequestBody @Valid RealtimeWeather realtimeWeatherInRequest) {
+            @RequestBody @Valid RealtimeWeatherDTO dto) {
 
-            RealtimeWeather updatedRealtimeWeather = realtimeWeatherService.update(locationCode, realtimeWeatherInRequest);
-            RealtimeWeatherDTO dto = entity2DTO(updatedRealtimeWeather);
+        RealtimeWeather realtimeWeather = dto2Entity(dto);
+        RealtimeWeather updatedRealtimeWeather = realtimeWeatherService.update(locationCode, realtimeWeather);
 
-            return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(entity2DTO(updatedRealtimeWeather));
     }
 
     private RealtimeWeatherDTO entity2DTO(RealtimeWeather realtimeWeather) {
         return modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
+    }
+
+    private RealtimeWeather dto2Entity(RealtimeWeatherDTO dto) {
+        return modelMapper.map(dto, RealtimeWeather.class);
     }
 
 }

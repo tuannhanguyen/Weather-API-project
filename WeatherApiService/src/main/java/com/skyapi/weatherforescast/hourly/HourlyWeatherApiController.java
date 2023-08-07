@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Validated
 public class HourlyWeatherApiController {
 
-//    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(HourlyWeatherApiController.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(HourlyWeatherApiController.class);
 
     @Autowired
     GeolocationService geoLocationService;

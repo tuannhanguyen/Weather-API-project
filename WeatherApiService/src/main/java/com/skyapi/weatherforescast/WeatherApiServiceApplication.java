@@ -8,7 +8,9 @@ import org.springframework.context.annotation.Bean;
 
 import com.skyapi.weatherforescast.common.DailyWeather;
 import com.skyapi.weatherforescast.common.HourlyWeather;
+import com.skyapi.weatherforescast.common.Location;
 import com.skyapi.weatherforescast.daily.DailyWeatherDTO;
+import com.skyapi.weatherforescast.full.FullWeatherDTO;
 import com.skyapi.weatherforescast.hourly.HourlyWeatherDTO;
 
 @SpringBootApplication
@@ -32,6 +34,9 @@ public class WeatherApiServiceApplication {
         var typeMap4 = mapper.typeMap(DailyWeatherDTO.class, DailyWeather.class);
         typeMap4.addMapping(src -> src.getDayOfMonth(), (dest, v) -> dest.getId().setDayOfMonth(v != null ? (int) v : 0));
         typeMap4.addMapping(src -> src.getMonth(), (dest, v) -> dest.getId().setMonth(v != null ? (int) v : 0));
+
+        var typeMap5 = mapper.typeMap(Location.class, FullWeatherDTO.class);
+        typeMap5.addMapping(src -> src.toString(),  FullWeatherDTO::setLocation);
 
         return mapper;
     }

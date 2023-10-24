@@ -44,11 +44,9 @@ public class FullWeatherService {
     	realtimeWeather.setLocationCode(locationCode);
     	realtimeWeather.setLastUpdated(new Date());
     	
-    	List<HourlyWeather> listHourlyWeather = locationInRequest.getListHourlyWeather();
-    	listHourlyWeather.forEach(hw -> hw.getId().setLocation(locationInDB));
+    	saveRealtimeWeatherIfNotExistBefore(locationInRequest, locationInDB);
     	
-    	List<DailyWeather> listDailyWeather = locationInRequest.getListDailyWeather();
-    	listDailyWeather.forEach(dw -> dw.getId().setLocation(locationInDB));
+    	setLocationForWeatherData(locationInRequest, locationInDB);
     	
     	locationInRequest.setCode(locationInDB.getCode());
     	locationInRequest.setCityName(locationInDB.getCityName());
@@ -60,6 +58,21 @@ public class FullWeatherService {
     	
     	return locationRepo.save(locationInRequest);
     }
+
+	private void saveRealtimeWeatherIfNotExistBefore(Location locationInRequest, Location locationInDB) {
+		if (locationInDB.getRealtimeWeather() == null) {
+    		locationInDB.setRealtimeWeather(locationInRequest.getRealtimeWeather());
+    		locationRepo.save(locationInDB);
+    	}
+	}
+
+	private void setLocationForWeatherData(Location locationInRequest, Location locationInDB) {
+		List<HourlyWeather> listHourlyWeather = locationInRequest.getListHourlyWeather();
+    	listHourlyWeather.forEach(hw -> hw.getId().setLocation(locationInDB));
+    	
+    	List<DailyWeather> listDailyWeather = locationInRequest.getListDailyWeather();
+    	listDailyWeather.forEach(dw -> dw.getId().setLocation(locationInDB));
+	}
 
 
 }

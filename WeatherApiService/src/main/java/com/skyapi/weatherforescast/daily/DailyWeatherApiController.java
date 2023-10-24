@@ -38,7 +38,7 @@ public class DailyWeatherApiController {
     ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<?> getDailyForecastByIPAddress(HttpServletRequest request) {
+    public ResponseEntity<?> listDailyForecastByIPAddress(HttpServletRequest request) {
         String ipAddress = CommonUtility.getIPAddress(request);
 
         Location locationFromIP = geolocationService.getLocation(ipAddress);
@@ -52,7 +52,7 @@ public class DailyWeatherApiController {
     }
 
     @GetMapping("/{locationCode}")
-    public ResponseEntity<?> getDailyForecastByLocationCode(@PathVariable("locationCode") String locationCode) {
+    public ResponseEntity<?> listDailyForecastByLocationCode(@PathVariable("locationCode") String locationCode) {
         List<DailyWeather> dailyForecast = dailyWeatherService.getByLocationCode(locationCode);
 
         if (dailyForecast.isEmpty()) {

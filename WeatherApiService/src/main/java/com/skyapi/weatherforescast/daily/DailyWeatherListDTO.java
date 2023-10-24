@@ -3,8 +3,6 @@ package com.skyapi.weatherforescast.daily;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyWeatherListDTO {
+	
+	// @JsonProperty replaced by PropertyNamingStrategy.SNAKE_CASE in configuration
     private String location;
 
-    @JsonProperty("daily_forecast")
+//    @JsonProperty("daily_forecast")
     private List<DailyWeatherDTO> dailyForecast = new ArrayList<>();
 
     public void addWeatherDailyDTO(DailyWeatherDTO dto) {

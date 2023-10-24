@@ -39,7 +39,7 @@ public class HourlyWeatherApiController {
     ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<?> listHourlyForecastByIpAddress(HttpServletRequest request) {
+    public ResponseEntity<?> listHourlyForecastByIPAddress(HttpServletRequest request) {
         String ipAddress = CommonUtility.getIPAddress(request);
 
         try {
@@ -61,7 +61,7 @@ public class HourlyWeatherApiController {
     }
 
     @GetMapping("/{locationCode}")
-    public ResponseEntity<?> getHourlyWeatherByLocatinCode(@PathVariable("locationCode") String locationCode,
+    public ResponseEntity<?> listHourlyForecastByLocationCode(@PathVariable("locationCode") String locationCode,
             HttpServletRequest request) {
 
         try {

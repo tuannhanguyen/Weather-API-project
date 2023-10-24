@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/fully")
-public class FullWeatherController {
+public class FullWeatherApiController {
 
     @Autowired
     private GeolocationService geolocationService;
@@ -36,7 +36,7 @@ public class FullWeatherController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<FullWeatherDTO> getByIPAddress(HttpServletRequest request) {
+    public ResponseEntity<FullWeatherDTO> getFullWeatherByIPAddress(HttpServletRequest request) {
         String IPAddress = CommonUtility.getIPAddress(request);
         Location locationFromIP = geolocationService.getLocation(IPAddress);
         Location locationInDb = fullWeatherService.getByLocation(locationFromIP);
@@ -45,7 +45,7 @@ public class FullWeatherController {
     }
 
     @GetMapping("/{locationCode}")
-    public ResponseEntity<FullWeatherDTO> getByLocationCode(@PathVariable("locationCode") String locationCode) {
+    public ResponseEntity<FullWeatherDTO> getFullWeatherByLocationCode(@PathVariable("locationCode") String locationCode) {
         Location locationInDb = locationService.get(locationCode);
 
         return ResponseEntity.ok(entity2DTO(locationInDb));

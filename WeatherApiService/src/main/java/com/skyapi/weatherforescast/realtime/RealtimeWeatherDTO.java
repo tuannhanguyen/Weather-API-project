@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -19,6 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RealtimeWeatherDTO {
+	
+	// @JsonProperty replaced by PropertyNamingStrategy.SNAKE_CASE in configuration
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String location;
@@ -32,7 +33,7 @@ public class RealtimeWeatherDTO {
     @Range(min = -50, max = 50, message = "Precipitation must be in the range of 0 to 100 Celsius degree")
     private int precipation;
 
-    @JsonProperty("wind_speed")
+//    @JsonProperty("wind_speed")
     @Range(min = 0, max = 200, message = "Wind speed must be in the range of 0 to 200 Celsius km/h")
     private int windSpeed;
 
@@ -40,7 +41,7 @@ public class RealtimeWeatherDTO {
     @Length(min = 3, max = 50, message = "Status must be in betwwen 3-50 characters")
     private String status;
 
-    @JsonProperty("last_updated")
+//    @JsonProperty("last_updated")
     @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date lastUpdated;
 

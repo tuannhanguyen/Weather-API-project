@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RealtimeWeatherDTO {
+public class RealtimeWeatherDTO extends RepresentationModel<RealtimeWeatherDTO> {
 	
 	// @JsonProperty replaced by PropertyNamingStrategy.SNAKE_CASE in configuration
 

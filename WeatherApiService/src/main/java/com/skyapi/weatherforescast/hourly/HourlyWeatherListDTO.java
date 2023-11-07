@@ -3,10 +3,12 @@ package com.skyapi.weatherforescast.hourly;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import lombok.Data;
 
 @Data
-public class HourlyWeatherListDTO {
+public class HourlyWeatherListDTO extends RepresentationModel<HourlyWeatherListDTO> {
 	
 	// @JsonProperty replaced by PropertyNamingStrategy.SNAKE_CASE in configuration
 	

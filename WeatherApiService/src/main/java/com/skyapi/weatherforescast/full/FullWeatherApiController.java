@@ -2,6 +2,7 @@ package com.skyapi.weatherforescast.full;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,13 +36,18 @@ public class FullWeatherApiController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private FullWeatherModelAssembler modelAssembler;
+
     @GetMapping
-    public ResponseEntity<FullWeatherDTO> getFullWeatherByIPAddress(HttpServletRequest request) {
+    public ResponseEntity<EntityModel<FullWeatherDTO>> getFullWeatherByIPAddress(HttpServletRequest request) {
         String IPAddress = CommonUtility.getIPAddress(request);
         Location locationFromIP = geolocationService.getLocation(IPAddress);
         Location locationInDb = fullWeatherService.getByLocation(locationFromIP);
 
-        return ResponseEntity.ok(entity2DTO(locationInDb));
+        FullWeatherDTO dto = entity2DTO(locationInDb);
+
+        return ResponseEntity.ok(modelAssembler.toModel(dto));
     }
 
     @GetMapping("/{locationCode}")
@@ -50,24 +56,24 @@ public class FullWeatherApiController {
 
         return ResponseEntity.ok(entity2DTO(locationInDb));
     }
-    
+
     @PutMapping("/{locationCode}")
     public ResponseEntity<?> updateByLocationCode(@PathVariable("locationCode") String locationCode,
     		@RequestBody @Valid FullWeatherDTO dto) {
-    	
+
     	if (dto.getListDailyWeather().isEmpty()) {
     		throw new BadRequestException("Daily weather data cannot be empty");
     	}
-    	
+
     	if (dto.getListHourlyWeather().isEmpty()) {
     		throw new BadRequestException("Hourly weather data cannot be empty");
     	}
-    	
+
     	Location updatedLocation = fullWeatherService.update(locationCode, DTO2Entity(dto));
-    	
+
     	return ResponseEntity.ok(entity2DTO(updatedLocation));
     }
-    
+
     private Location DTO2Entity(FullWeatherDTO dto) {
     	return modelMapper.map(dto, Location.class);
     }

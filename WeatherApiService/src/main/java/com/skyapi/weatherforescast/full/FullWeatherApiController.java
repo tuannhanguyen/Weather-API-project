@@ -74,8 +74,10 @@ public class FullWeatherApiController {
     	}
 
     	Location updatedLocation = fullWeatherService.update(locationCode, DTO2Entity(dto));
+    	
+    	FullWeatherDTO entity2dto = entity2DTO(updatedLocation);
 
-    	return ResponseEntity.ok(entity2DTO(updatedLocation));
+    	return ResponseEntity.ok(addLinksByLocationCode(entity2dto, locationCode));
     }
 
     private Location DTO2Entity(FullWeatherDTO dto) {

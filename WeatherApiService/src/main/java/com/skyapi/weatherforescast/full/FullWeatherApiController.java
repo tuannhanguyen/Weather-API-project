@@ -19,6 +19,8 @@ import com.skyapi.weatherforescast.location.LocationService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/v1/fully")
@@ -51,10 +53,12 @@ public class FullWeatherApiController {
     }
 
     @GetMapping("/{locationCode}")
-    public ResponseEntity<FullWeatherDTO> getFullWeatherByLocationCode(@PathVariable("locationCode") String locationCode) {
+    public ResponseEntity<EntityModel<FullWeatherDTO>> getFullWeatherByLocationCode(@PathVariable("locationCode") String locationCode) {
         Location locationInDb = locationService.get(locationCode);
+        
+        FullWeatherDTO entity2dto = entity2DTO(locationInDb);
 
-        return ResponseEntity.ok(entity2DTO(locationInDb));
+        return ResponseEntity.ok(addLinksByLocationCode(entity2dto, locationCode));
     }
 
     @PutMapping("/{locationCode}")
@@ -87,5 +91,12 @@ public class FullWeatherApiController {
         }
 
         return dto;
+    }
+    
+    private EntityModel<FullWeatherDTO> addLinksByLocationCode(FullWeatherDTO dto, String locationCode) {
+    	return EntityModel.of(dto)
+    			.add(linkTo(methodOn(FullWeatherApiController.class)
+    				.getFullWeatherByLocationCode(locationCode))
+    					.withSelfRel());
     }
 }
